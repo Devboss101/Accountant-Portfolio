@@ -1,5 +1,6 @@
 # config/settings.py
 
+import cloudinary
 import os
 import dj_database_url
 from pathlib import Path
@@ -31,6 +32,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'core',
+    'cloudinary_storage',
+    'cloudinary',
 ]
 
 MIDDLEWARE = [
@@ -96,6 +99,15 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # ── Media Files ───────────────────────────────────────────────
 MEDIA_URL  = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+cloudinary.config(
+    cloud_name = os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    api_key    = os.environ.get('CLOUDINARY_API_KEY'),
+    api_secret = os.environ.get('CLOUDINARY_API_SECRET'),
+)
+
 
 # ── Email ─────────────────────────────────────────────────────
 EMAIL_BACKEND       = os.environ.get(
