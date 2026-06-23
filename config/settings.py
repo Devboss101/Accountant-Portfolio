@@ -28,7 +28,10 @@ load_dotenv(BASE_DIR / ".env")
 # ── Security ─────────────────────────────────────────────────
 SECRET_KEY = os.environ.get('SECRET_KEY', 'change-me-in-production')
 DEBUG      = os.environ.get('DEBUG', 'False') == 'True'
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = os.environ.get(
+    "ALLOWED_HOSTS",
+    "localhost,127.0.0.1"
+).split(",")
 
 print("DEBUG =", DEBUG)
 
@@ -133,6 +136,7 @@ DEFAULT_FROM_EMAIL  = os.environ.get('DEFAULT_FROM_EMAIL', EMAIL_HOST_USER)
 
 # ── Security Headers (production only) ───────────────────────
 if not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_BROWSER_XSS_FILTER        = True
     SECURE_CONTENT_TYPE_NOSNIFF      = True
     X_FRAME_OPTIONS                  = 'DENY'
