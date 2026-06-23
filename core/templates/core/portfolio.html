@@ -1,0 +1,437 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<!-- ============================================================
+     SECTION 1 - HOME
+============================================================ -->
+<section id="home" class="section hero">
+  <div class="hero__inner container">
+
+    <div class="hero__text">
+      <p class="hero__greeting">Hello, I am</p>
+      <h1 class="hero__name">{{ profile.full_name }}</h1>
+      <p class="hero__tagline">{{ profile.tagline }}</p>
+      <p class="hero__bio">{{ profile.bio }}</p>
+
+      <div class="hero__actions">
+        {% if profile.cv %}
+          <a href="{{ profile.cv.url }}" download class="btn btn--primary">
+            &#8659; Download CV
+          </a>
+        {% endif %}
+        <a href="#contact" class="btn btn--outline">Hire Me</a>
+      </div>
+
+      <div class="hero__socials">
+        {% if profile.linkedin %}
+          <a href="{{ profile.linkedin }}" target="_blank">in</a>
+        {% endif %}
+        {% if profile.twitter %}
+          <a href="{{ profile.twitter }}" target="_blank">&#120143;</a>
+        {% endif %}
+        <a href="mailto:{{ profile.email }}">&#9993;</a>
+      </div>
+    </div>
+
+    <div class="hero__image">
+      {% if profile.photo %}
+        <img src="{{ profile.photo.url }}" alt="{{ profile.full_name }}"/>
+      {% endif %}
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ============================================================
+     SECTION 2 - EXPERIENCE (Plain JS Carousel)
+============================================================ -->
+<section id="experience" class="section experience">
+  <div class="container">
+    <h2 class="section__title">Work Experience</h2>
+    <p class="section__subtitle">Places I have contributed my expertise</p>
+
+    <div class="carousel" id="exp-carousel">
+      <div class="carousel__track" id="exp-track">
+
+        {% for exp in experiences %}
+        <div class="carousel__slide">
+          <div class="exp-card">
+            {% if exp.company_logo %}
+              <img src="{{ exp.company_logo.url }}"
+                   alt="{{ exp.company }}"
+                   class="exp-card__logo"/>
+            {% endif %}
+            <h3 class="exp-card__role">{{ exp.role }}</h3>
+            <p class="exp-card__company">&#127970; {{ exp.company }}</p>
+            <p class="exp-card__date">
+              &#128197;
+              {{ exp.start_date|date:"M Y" }}
+              &mdash;
+              {% if exp.is_current %}
+                <span class="badge">Present</span>
+              {% else %}
+                {{ exp.end_date|date:"M Y" }}
+              {% endif %}
+            </p>
+            <p class="exp-card__desc">{{ exp.description }}</p>
+          </div>
+        </div>
+        {% empty %}
+          <p class="empty-state">No experience entries yet.</p>
+        {% endfor %}
+
+      </div>
+
+      <div class="carousel__controls">
+        <button class="carousel__btn" id="exp-prev">&#8592; Prev</button>
+        <span class="carousel__counter" id="exp-counter"></span>
+        <button class="carousel__btn" id="exp-next">Next &#8594;</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ============================================================
+     SECTION 3 - SKILLS
+============================================================ -->
+<section id="skills" class="section skills">
+  <div class="container">
+    <h2 class="section__title">Skills</h2>
+    <p class="section__subtitle">Tools and competencies I bring to the table</p>
+
+    <div class="skills__grid">
+      {% for category, skill_list in skill_categories.items %}
+      <div class="skill-group">
+        <h3 class="skill-group__title">{{ category }}</h3>
+        {% for skill in skill_list %}
+        <div class="skill-item">
+          <div class="skill-item__header">
+            <span>{{ skill.name }}</span>
+            <span>{{ skill.proficiency }}%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-bar__fill"
+                 style="width: {{ skill.proficiency }} %">
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% empty %}
+        <p class="empty-state">No skills added yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     SECTION 4 - PROJECTS (Plain JS Carousel)
+============================================================ -->
+<section id="projects" class="section projects">
+  <div class="container">
+    <h2 class="section__title">Projects</h2>
+    <p class="section__subtitle">Work I have delivered for clients and organisations</p>
+
+    <div class="carousel" id="proj-carousel">
+      <div class="carousel__track" id="proj-track">
+
+        {% for project in projects %}
+        <div class="carousel__slide">
+          <div class="project-card">
+            {% if project.image %}
+              <img src="{{ project.image.url }}"
+                   alt="{{ project.title }}"
+                   class="project-card__img"/>
+            {% endif %}
+            <div class="project-card__body">
+              <h3 class="project-card__title">{{ project.title }}</h3>
+              <p class="project-card__desc">{{ project.description }}</p>
+              <div class="project-card__tags">
+                {% for tag in project.get_tech_list %}
+                  <span class="tag">{{ tag }}</span>
+                {% endfor %}
+              </div>
+              <div class="project-card__links">
+                {% if project.live_link %}
+                  <a href="{{ project.live_link }}"
+                     target="_blank"
+                     class="btn btn--sm btn--primary">
+                    &#8599; Live
+                  </a>
+                {% endif %}
+                {% if project.github_link %}
+                  <a href="{{ project.github_link }}"
+                     target="_blank"
+                     class="btn btn--sm btn--outline">
+                    &#123;&#125; GitHub
+                  </a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+        {% empty %}
+          <p class="empty-state">No projects added yet.</p>
+        {% endfor %}
+
+      </div>
+
+      <div class="carousel__controls">
+        <button class="carousel__btn" id="proj-prev">&#8592; Prev</button>
+        <span class="carousel__counter" id="proj-counter"></span>
+        <button class="carousel__btn" id="proj-next">Next &#8594;</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- ============================================================
+     SECTION 5 - CONTACT
+============================================================ -->
+<section id="contact" class="section contact">
+  <div class="container contact__inner">
+
+    <div class="contact__info">
+      <h2 class="section__title">Get In Touch</h2>
+      <p class="section__subtitle">
+        Have a project or opportunity? I would love to hear from you.
+      </p>
+      <ul class="contact__details">
+        <li>&#9993; {{ profile.email }}</li>
+        {% if profile.linkedin %}
+          <li>
+            in &nbsp;<a href="{{ profile.linkedin }}" target="_blank">
+              LinkedIn Profile
+            </a>
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+
+    <div class="contact__form-wrap">
+      <form method="POST" id="contact-form">
+        {% csrf_token %}
+
+        <div class="form-group">
+          <label for="id_name">Your Name</label>
+          {{ form.name }}
+          {% if form.name.errors %}
+            <span class="form-error">{{ form.name.errors.0 }}</span>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label for="id_email">Email Address</label>
+          {{ form.email }}
+          {% if form.email.errors %}
+            <span class="form-error">{{ form.email.errors.0 }}</span>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label for="id_subject">Subject</label>
+          {{ form.subject }}
+          {% if form.subject.errors %}
+            <span class="form-error">{{ form.subject.errors.0 }}</span>
+          {% endif %}
+        </div>
+
+        <div class="form-group">
+          <label for="id_message">Message</label>
+          {{ form.message }}
+          {% if form.message.errors %}
+            <span class="form-error">{{ form.message.errors.0 }}</span>
+          {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn--primary btn--full">
+          &#9993; Send Message
+        </button>
+      </form>
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}
+
+
+<!-- ============================================================
+     PLAIN JAVASCRIPT
+============================================================ -->
+{% block scripts %}
+<script>
+  /* ── Carousel factory ──────────────────────────────────────
+     Same as Stage 4 — no changes here
+  ────────────────────────────────────────────────────────── */
+  function initCarousel(trackId, prevId, nextId, counterId) {
+    var track   = document.getElementById(trackId);
+    var prevBtn = document.getElementById(prevId);
+    var nextBtn = document.getElementById(nextId);
+    var counter = document.getElementById(counterId);
+    var slides  = track.querySelectorAll('.carousel__slide');
+    var total   = slides.length;
+    var current = 0;
+
+    if (total === 0) return;
+
+    function slidesVisible() {
+      return window.innerWidth >= 1024 ? 3
+           : window.innerWidth >= 768  ? 2
+           : 1;
+    }
+
+    function update() {
+      var visible    = slidesVisible();
+      var maxIndex   = Math.max(0, total - visible);
+      if (current > maxIndex) current = maxIndex;
+
+      var slideWidth = track.parentElement.offsetWidth / visible;
+      track.style.transform = 'translateX(-' + (current * slideWidth) + 'px)';
+      slides.forEach(function(s) { s.style.width = slideWidth + 'px'; });
+
+      counter.textContent   = (current + 1) + ' / ' + (maxIndex + 1);
+      prevBtn.disabled      = current === 0;
+      nextBtn.disabled      = current >= maxIndex;
+    }
+
+    prevBtn.addEventListener('click', function() {
+      if (current > 0) { current--; update(); }
+    });
+
+    nextBtn.addEventListener('click', function() {
+      var maxIndex = Math.max(0, total - slidesVisible());
+      if (current < maxIndex) { current++; update(); }
+    });
+
+    window.addEventListener('resize', update);
+    update();
+  }
+
+  initCarousel('exp-track',  'exp-prev',  'exp-next',  'exp-counter');
+  initCarousel('proj-track', 'proj-prev', 'proj-next', 'proj-counter');
+
+
+  /* ── Navbar scroll ─────────────────────────────────────── */
+  window.addEventListener('scroll', function() {
+    document.getElementById('navbar')
+      .classList.toggle('navbar--scrolled', window.scrollY > 50);
+  });
+
+
+  /* ── Active nav link ───────────────────────────────────── */
+  var sections = document.querySelectorAll('section[id]');
+  var navLinks = document.querySelectorAll('.nav-links a');
+
+  window.addEventListener('scroll', function() {
+    var current = '';
+    sections.forEach(function(sec) {
+      if (window.scrollY >= sec.offsetTop - 80) {
+        current = sec.getAttribute('id');
+      }
+    });
+    navLinks.forEach(function(a) {
+      a.classList.remove('active');
+      if (a.getAttribute('href') === '#' + current) {
+        a.classList.add('active');
+      }
+    });
+  });
+
+
+  /* ── Hamburger ─────────────────────────────────────────── */
+  document.getElementById('hamburger').addEventListener('click', function() {
+    document.getElementById('nav-links').classList.toggle('nav-links--open');
+  });
+
+
+  /* ── Toast helper ──────────────────────────────────────── */
+  function showToast(message, isError) {
+    var toast       = document.createElement('div');
+    toast.className = 'toast' + (isError ? ' toast--error' : '');
+    toast.textContent = message;
+    document.body.appendChild(toast);
+
+    setTimeout(function() {
+      toast.style.opacity = '0';
+      setTimeout(function() { toast.remove(); }, 400);
+    }, 4000);
+  }
+
+  /* ── Auto dismiss server-side toasts (e.g. non-JS fallback) */
+  document.querySelectorAll('.toast').forEach(function(toast) {
+    setTimeout(function() {
+      toast.style.opacity = '0';
+      setTimeout(function() { toast.remove(); }, 400);
+    }, 4000);
+  });
+
+
+  /* ── Contact form — plain fetch() ──────────────────────── */
+  var form       = document.getElementById('contact-form');
+  var submitBtn  = form.querySelector('button[type="submit"]');
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();   // stop the hard page reload
+
+    // Clear any previous inline errors
+    form.querySelectorAll('.form-error').forEach(function(el) {
+      el.textContent = '';
+    });
+
+    // Show loading state on button
+    submitBtn.textContent = 'Sending...';
+    submitBtn.disabled    = true;
+
+    var formData = new FormData(form);
+
+    fetch('', {
+      method  : 'POST',
+      headers : { 'X-Requested-With': 'XMLHttpRequest' },
+      body    : formData
+    })
+    .then(function(response) {
+      return response.json().then(function(data) {
+        return { status: response.status, body: data };
+      });
+    })
+    .then(function(result) {
+      if (result.body.success) {
+        // Success — reset form and show toast
+        form.reset();
+        showToast(result.body.message, false);
+      } else {
+        // Validation errors — show them under each field
+        var errors = result.body.errors || {};
+        Object.keys(errors).forEach(function(field) {
+          var input    = form.querySelector('[name="' + field + '"]');
+          var errorEl  = input
+            ? input.parentElement.querySelector('.form-error')
+            : null;
+          if (errorEl) {
+            errorEl.textContent = errors[field][0];
+          }
+        });
+        showToast('Please fix the errors below.', true);
+      }
+    })
+    .catch(function(err) {
+      // Network or server error
+      showToast('Something went wrong. Please try again.', true);
+    })
+    .finally(function() {
+      submitBtn.textContent = '&#9993; Send Message';
+      submitBtn.disabled    = false;
+    });
+  });
+
+</script>
+{% endblock %}

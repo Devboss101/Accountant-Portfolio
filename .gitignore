@@ -1,0 +1,18 @@
+# Django system files
+*.pyc
+__pycache__/
+db.sqlite3
+media/
+staticfiles/
+
+# Environment configuration secrets
+.env
+*.env
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Code Editor folders
+.vscode/
+.idea/
