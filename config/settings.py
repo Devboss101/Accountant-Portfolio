@@ -1,6 +1,11 @@
 # config/settings.py
 
 import cloudinary
+import sys
+import django.utils.translation
+django.utils.translation.ugettext_lazy = django.utils.translation.gettext_lazy
+sys.modules['django.utils.translation'] = django.utils.translation
+
 import os
 import dj_database_url
 from pathlib import Path
